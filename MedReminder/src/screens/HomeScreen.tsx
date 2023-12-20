@@ -5,70 +5,61 @@ import {Screen, IntakesProgress, Calendar, IntakesList} from '../components';
 import {pressOnIntake, setIntakesForToday} from '../actions/intakes';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../utils/colors';
-import {getObjectData, removeData} from '../storage';
 import {signOut} from '../api/auth';
-import {getMedicinesOfUser} from '../api/meds';
+import {getUserMedsPerDay} from '../api/meds';
+import {setUserData} from '../actions/user';
 
-const HomeScreen = ({navigation}) => {
-  // const dispatch = useDispatch();
+const HomeScreen = ({navigation}: any): React.JSX.Element => {
+  const dispatch = useDispatch();
   const [username, setUsername] = useState('');
-  // const {user, calendar, intakes} = useSelector(state => state);
+  const {user, calendar} = useSelector(state => state);
 
   useEffect(() => {
-    getObjectData('user').then(res => {
-      setUsername(res?.username);
-      const onSuccess = (userData) => console.log(userData);
-      getMedicinesOfUser(res?.token, onSuccess);
-      // const onSuccess = (userData) => dispatch(setUserData(userData));
-      // const showAlert = () => {
-      //   Alert.alert("Something wrent wrong getting your data. You will be logged out safely", "", [
-      //     { text: "Ok", onPress: () => signUserOut(), style: "cancel" },
-      //   ]);
-      // };
-      // getUser(onSuccess, showAlert);
+    setUsername(user?.username);
+    const onSuccess = (intakes: any[]) => {
+      dispatch(setIntakesForToday(intakes));
+    };
+    const onError = () => {
+      Alert.alert(
+        '',
+        'Something wrent wrong getting your data. You will be logged out safely',
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              signOut(user.username, user.password, user.token);
+              dispatch(setUserData(''));
+              navigation.navigate('Login');
+            },
+            style: 'cancel',
+          },
+        ],
+      );
+    };
+    getUserMedsPerDay(
+      user.userId,
+      calendar?.selectedDay?.formatted,
+      onSuccess,
+      onError,
+    );
+  }, [calendar?.selectedDay?.formatted, dispatch, navigation, user]);
+
+  useEffect(() => {
+    // Always Clear pressedIntake State when focusing HomeScreen
+    const unsubscribe = navigation.addListener('focus', () => {
+      dispatch(pressOnIntake(''));
     });
+    return unsubscribe;
   });
-
-  // useEffect(() => {
-  // const onSuccess = (userData) => dispatch(setUserData(userData));
-  // const showAlert = () => {
-  //   Alert.alert("Something wrent wrong getting your data. You will be logged out safely", "", [
-  //     { text: "Ok", onPress: () => signUserOut(), style: "cancel" },
-  //   ]);
-  // };
-  // getUser(onSuccess, showAlert);
-  // }, [calendar.selectedDay, user.newMedicineTaken, intakes.editedIntake, dispatch]);
-
-  // Checks if the selected day (e.g. "Mon") is included in the reminders
-  // This ensures to render only the reminders that are relevant for that day
-  // useEffect(() => {
-  //   const filteredIntakesForToday = user?.reminders?.filter(reminder =>
-  //     reminder.reminderDays.includes(calendar?.selectedDay?.formatted),
-  //   );
-  //   dispatch(setIntakesForToday(filteredIntakesForToday));
-  // }, [dispatch]);
-
-  // useEffect(() => {
-  //   // Always Clear pressedIntake State when focusing HomeScreen
-  //   const unsubscribe = navigation.addListener('focus', () => {
-  //     dispatch(pressOnIntake(''));
-  //   });
-  //   return unsubscribe;
-  // });
 
   const logout = () => {
     Alert.alert('', 'Are you sure you want to log out?', [
       {
         text: 'OK',
         onPress: () => {
-          getObjectData('user').then(res => {
-            signOut(res?.username, res?.password, res?.token).then(data => {
-              if (data?.data) {
-                removeData('user');
-              }
-              navigation.navigate('Login');
-            });
-          });
+          signOut(user.username, user.password, user.token);
+          dispatch(setUserData(''));
+          navigation.navigate('Login');
         },
       },
       {

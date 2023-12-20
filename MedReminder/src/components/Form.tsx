@@ -51,12 +51,11 @@ const Form = ({type = 'Add'}) => {
   const [dropDownPickerVisible, setDropDownPickerVisible] = useState(false);
   const [dropDownPickerItems, setDropDownPickerItems] =
     useState(MEDICINE_TYPES);
+  const {userId} = useSelector(state => JSON.parse(state.userId));
 
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    getObjectData('user').then(res => {
-      formState.user = JSON.parse(res.userId);
-    });
+    formState.user = userId;
     // Compare the current values with the initialState and check for empty values
     // If there have been NO updates made or there is at least one empty value, disable the button
     // When there is at least one update and NO empty value, enable the button for the user to submit the changes

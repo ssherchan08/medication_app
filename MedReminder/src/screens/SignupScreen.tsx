@@ -10,7 +10,8 @@ import {
 import {Screen, CustomInput, CustomButton} from '../components';
 import colors from '../utils/colors';
 import {logIn, signUp} from '../api/auth';
-import {storeObjectData} from '../storage';
+import {useDispatch} from 'react-redux';
+import {setUserData} from '../actions/user';
 
 const initialState = {
   username: '',
@@ -19,9 +20,10 @@ const initialState = {
   confirmedPassword: '',
 };
 
-const SignupScreen = ({navigation}) => {
+const SignupScreen = ({navigation}: any): React.JSX.Element => {
   const [formState, setFormState] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSignUp = () => {
     setIsLoading(true);
@@ -52,12 +54,14 @@ const SignupScreen = ({navigation}) => {
                     logIn(formState.username, formState.password).then(
                       async res => {
                         if (res.data) {
-                          await storeObjectData('user', {
-                            username: res?.data?.username,
-                            password: formState.password,
-                            userId: res?.data?.id,
-                            token: res?.data?.token,
-                          });
+                          dispatch(
+                            setUserData({
+                              username: res?.data?.username,
+                              password: formState.password,
+                              userId: res?.data?.id,
+                              token: res?.data?.token,
+                            }),
+                          );
                           navigation.navigate('Home');
                         } else {
                           Alert.alert('Email or Password is wrong');

@@ -33,6 +33,22 @@ export const POST = async (url: string, body: any) => {
   }
 };
 
+export const PUT = async (url: string, body: any) => {
+  try {
+    return await axios({
+      method: 'put',
+      url: `${baseUrl}/${url}`,
+      data: body,
+      // responseType: 'json',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (err: any) {
+    return err;
+  }
+};
+
 export const DELETE = async (url: string, id: number) => {
   try {
     return await axios({

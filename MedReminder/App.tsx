@@ -13,6 +13,7 @@ import AddMedicineScreen from './src/screens/AddMedicineScreen';
 const AppStack = createStackNavigator();
 function App(): React.JSX.Element {
   LogBox.ignoreLogs(['Setting a timer']);
+  LogBox.ignoreLogs(['Selector unknown returned the root state when called']);
 
   return (
     <Provider store={store}>
@@ -25,7 +26,6 @@ function App(): React.JSX.Element {
           />
           <View style={{flex: 1}}>
             <AppStack.Navigator initialRouteName={'Login'}>
-              {/* <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen} /> */}
               <AppStack.Screen
                 name="Login"
                 options={() => ({
