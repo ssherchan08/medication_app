@@ -11,11 +11,9 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {format} from 'date-fns';
-import {enGB, enUS} from 'date-fns/locale';
+import {enUS} from 'date-fns/locale';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import uuid from 'react-native-uuid';
-// import {editMedicine, deleteMedicine, addMedicine} from '../api/firebase';
 import {editIntake} from '../actions/intakes';
 import {MEDICINE_TYPES, MEDICINE_DAYS} from '../constants';
 import colors from '../utils/colors';
@@ -23,20 +21,18 @@ import {Text} from 'react-native';
 import CustomButton from './CustomButton';
 import CheckBox from '@react-native-community/checkbox';
 import {CustomInput} from '.';
-import {addMedicine, deleteMedicine} from '../api/meds';
-import {getObjectData} from '../storage';
+import {addMedicine, deleteMedicine, editMedicine} from '../api/meds';
 
 const Form = ({type = 'Add'}) => {
   const initialAddState = {
-    user: 0,
-    id: uuid.v4(),
-    name: '',
-    medType: '',
+    amount: '',
     dose: '',
-    amount: 0,
+    medType: '',
+    name: '',
     reminder: '',
     reminderDays: [],
     takenOn: [],
+    user: 0,
   };
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -46,17 +42,15 @@ const Form = ({type = 'Add'}) => {
   }, []);
   const [formState, setFormState] = useState(initialState);
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  const [displaytime, setDisplayTime] = useState('12:00 pm');
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [dropDownPickerVisible, setDropDownPickerVisible] = useState(false);
   const [dropDownPickerItems, setDropDownPickerItems] =
     useState(MEDICINE_TYPES);
+  const {user} = useSelector(state => state);
 
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    getObjectData('user').then(res => {
-      formState.user = JSON.parse(res.userId);
-    });
+    formState.user = JSON.parse(user.userId);
     // Compare the current values with the initialState and check for empty values
     // If there have been NO updates made or there is at least one empty value, disable the button
     // When there is at least one update and NO empty value, enable the button for the user to submit the changes
@@ -79,7 +73,7 @@ const Form = ({type = 'Add'}) => {
     const hasUpdatedValues = comparedValues.some(value => value === false);
     const hasEmptyValues = emptyValues.some(value => value === true);
     setButtonDisabled(!hasUpdatedValues || hasEmptyValues);
-  }, [formState, initialState]);
+  }, [formState, initialState, user.userId]);
 
   const submitForm = async () => {
     if (type === 'Add') {
@@ -119,7 +113,7 @@ const Form = ({type = 'Add'}) => {
       };
       const onEditFailure = () =>
         Alert.alert('Something went wrong. Please try again');
-      //   editMedicine(formState, onEditSuccess, onEditFailure);
+      editMedicine(pressedIntake.id, formState, onEditSuccess, onEditFailure);
     }
   };
 
@@ -132,7 +126,9 @@ const Form = ({type = 'Add'}) => {
         [
           {
             text: 'Ok',
-            onPress: () => {},
+            onPress: () => {
+              navigation.navigate('Home');
+            },
             style: 'cancel',
           },
         ],
@@ -140,23 +136,11 @@ const Form = ({type = 'Add'}) => {
     };
     const onDeleteFailure = () =>
       Alert.alert('Something went wrong. Please try again');
-    deleteMedicine(9, onDeleteSuccess, onDeleteFailure);
+    deleteMedicine(formState.id, onDeleteSuccess, onDeleteFailure);
   };
 
   const handleDatePickerConfirm = (date: Date) => {
     const formattedTimeString =
-      Platform.OS === 'ios'
-        ? date?.toLocaleString('en-GB', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false,
-          })
-        : format(date, 'hh:mm:ss', {
-            locale: enGB,
-          }).toUpperCase();
-    setFormState({...formState, reminder: formattedTimeString});
-    const diplayTime =
       Platform.OS === 'ios'
         ? date?.toLocaleString('en-US', {
             hour: '2-digit',
@@ -164,7 +148,7 @@ const Form = ({type = 'Add'}) => {
             formatMatcher: 'basic',
           })
         : format(date, 'hh:mm', {locale: enUS}).toUpperCase();
-    setDisplayTime(diplayTime);
+    setFormState({...formState, reminder: formattedTimeString});
     hideDatePicker();
   };
 
@@ -237,12 +221,12 @@ const Form = ({type = 'Add'}) => {
           onChange={amount => setFormState({...formState, amount})}
         />
         {/* *** REMINDER TIME *** */}
-        <Text style={styles(false).inputLabel}>Reminder Time*</Text>
+        <Text style={styles(false).inputLabel}>Time*</Text>
         {formState.reminder ? (
           <TouchableOpacity
             onPress={showDatePicker}
             style={styles(false).reminder}>
-            <Text style={{fontSize: 16}}>{displaytime}</Text>
+            <Text style={{fontSize: 16}}>{formState.reminder}</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
@@ -261,7 +245,7 @@ const Form = ({type = 'Add'}) => {
           onCancel={hideDatePicker}
         />
         {/* *** REMINDER DAY *** */}
-        <Text style={styles(false).inputLabel}>Reminder Day*</Text>
+        <Text style={styles(false).inputLabel}>Days*</Text>
         <View style={styles(false).checkBoxContainerStyle}>
           {MEDICINE_DAYS.map(day => {
             const isChecked = formState?.reminderDays.find(

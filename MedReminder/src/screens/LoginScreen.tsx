@@ -4,17 +4,20 @@ import colors from '../utils/colors';
 import {Screen, CustomInput, CustomButton} from '../components';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {logIn} from '../api/auth';
-import {storeObjectData} from '../storage';
 import {ScrollView} from 'react-native-gesture-handler';
+import {useDispatch} from 'react-redux';
+import {setUserData} from '../actions/user';
+import {saveToAsyncStorage} from '../asyncStorage';
 
 const initialState = {
   username: '',
   password: '',
 };
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({navigation}: any): React.JSX.Element => {
   const [formState, setFormState] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSignIn = () => {
     setIsLoading(true);
@@ -26,16 +29,17 @@ const LoginScreen = ({navigation}) => {
         Alert.alert('Your Password is required');
         setIsLoading(false);
       } else {
-        console.log(formState)
         logIn(formState.username, formState.password)
           .then(async res => {
             if (res.data) {
-              await storeObjectData('user', {
+              const uData = {
                 username: res?.data?.username,
                 password: formState.password,
                 userId: res?.data?.id,
                 token: res?.data?.token,
-              });
+              };
+              // await saveToAsyncStorage('user', uData);
+              dispatch(setUserData(uData));
               navigation.navigate('Home');
             } else {
               Alert.alert('Email or Password is wrong');

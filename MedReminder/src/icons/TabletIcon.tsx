@@ -11,7 +11,8 @@ const TabletIcon = ({...props}) => {
             <Path
               data-name="Pfad 5"
               d="M6.785 7.22a10.138 10.138 0 00-.58 13.406l13.96-14.442a10.138 10.138 0 00-13.38 1.035z"
-              fill={colors.text.iconLight}
+              fill={colors.text.dark}
+              opacity={0.563}
             />
           </G>
         </G>
@@ -20,7 +21,8 @@ const TabletIcon = ({...props}) => {
             <Path
               data-name="Pfad 6"
               d="M21.995 7.953L8.035 22.395a10.116 10.116 0 0013.96-14.442z"
-              fill={colors.text.iconLight}
+              fill={colors.text.dark}
+              opacity={0.563}
             />
           </G>
         </G>

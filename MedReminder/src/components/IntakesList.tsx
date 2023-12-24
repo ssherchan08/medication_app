@@ -6,25 +6,12 @@ import colors from '../utils/colors';
 
 const IntakesList = () => {
   const {intakesForToday} = useSelector(state => state.intakes);
-  // const intakesForToday = [
-  //   {
-  //     id: '12',
-  //     takenOn: '12 dec',
-  //     name: 'pill',
-  //     amount: '12mg',
-  //     type: 'pill',
-  //     dose: '2',
-  //     reminder: 'none',
-  //     reminderDays: 'tue',
-  //     notificationId: 12,
-  //   },
-  // ];
 
   return (
     <View style={styles.container}>
       <ScrollView
         bounces={false}
-        style={{width: '100%'}}
+        style={{width: '100%', height:'35%'}}
         showsVerticalScrollIndicator={false}>
         {intakesForToday?.length ? (
           intakesForToday?.map((intake: any, index: number) => {
@@ -52,6 +39,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     borderRadius: 12,
+    height: 200,
   },
   noDataText: {
     fontSize: 18,

@@ -1,11 +1,12 @@
 import * as React from 'react';
 import Svg, {G, Path} from 'react-native-svg';
+import colors from '../utils/colors';
 
 const DropsIcon = ({...props}) => {
   return (
     <Svg width={26.212} height={30.312} viewBox="0 0 26.212 30.312" {...props}>
       <G data-name="Gruppe 18">
-        <G fill={props.theme.text.iconLight}>
+        <G fill={colors.text.dark} opacity={0.563}>
           <Path
             data-name="Pfad 8"
             d="M19.836 10.068l-3.7-3.7-9.88 9.89c-1.026 1.027-2.359 4.016-1.338 5.035s4.016-.319 5.037-1.337zm0 0"
@@ -19,7 +20,8 @@ const DropsIcon = ({...props}) => {
           <Path
             data-name="Pfad 10"
             d="M3.205 23.687c-.16-.191-.313-.366-.45-.527-.137.168-.29.343-.45.527C1.336 24.801 0 26.35 0 27.56a2.714 2.714 0 00.809 1.946 2.745 2.745 0 001.946.809 2.714 2.714 0 001.945-.813 2.759 2.759 0 00.81-1.942c0-1.21-1.335-2.752-2.305-3.873z"
-            fill={props.theme.text.iconLight}
+            fill={colors.text.dark}
+            opacity={0.563}
           />
         </G>
       </G>

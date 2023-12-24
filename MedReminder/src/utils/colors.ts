@@ -36,8 +36,8 @@ const colors = {
   text: {
     dark: '#000000',
     light: '#4D5358',
-    green: '',
-    iconLight: '',
+    green: '#27A285',
+    iconLight: '#DDDDDD',
     red: '#BE2739',
   },
   reds: {

@@ -11,7 +11,7 @@
  * *******************************************
  * **** Sets the Data of the current User ****
  * *******************************************
- * @param {Object} userData - User Data Object from Firestore
+ * @param {Object} userData - User Data Object
  * @returns {Action} - Action Object
  */
 export const setUserData = (userData: any) => ({
