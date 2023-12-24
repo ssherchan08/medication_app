@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     borderRadius: 12,
+    height: 200,
   },
   noDataText: {
     fontSize: 18,

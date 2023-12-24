@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {takeNewMedicine} from '../actions/user';
-import {pressOnIntake} from '../actions/intakes';
+import {pressOnIntake, pressOnIntakeId} from '../actions/intakes';
 import {CheckmarkIcon, ClockIcon, InfoIcon} from '../icons';
 import {renderMedicineIcon} from '../utils/renderMedicineIcon';
 import colors from '../utils/colors';
@@ -34,26 +34,45 @@ const DefaultIntake = ({name, amount, medType, dose, reminder}) => {
   );
 };
 
-const Intake = ({id, name, amount, medType, dose, reminder}) => {
+const Intake = ({id, name, amount, medType, dose, reminder, reminderDays}) => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   const subComponentProps = {
+    name,
+    amount,
+    medType,
+    dose,
+    reminder,
+    reminderDays,
+  };
+
+  const storeProps = {
     id,
     name,
     amount,
     medType,
     dose,
     reminder,
+    reminderDays,
+    takenOn: [],
   };
 
-  const handleOnPress = () => {
-    //route
+  const handleOnPress = async () => {
+    dispatch(pressOnIntake(storeProps));
+    navigation.navigate('Details');
   };
 
   return (
-    <TouchableWithoutFeedback onLongPress={handleOnPress}>
+    <TouchableOpacity onPress={handleOnPress}>
       <View style={styles.intakeContainer}>
         <DefaultIntake {...subComponentProps} />
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
+    // <TouchableWithoutFeedback onLongPress={handleOnPress}>
+    //   <View style={styles.intakeContainer}>
+    //     <DefaultIntake {...subComponentProps} />
+    //   </View>
+    // </TouchableWithoutFeedback>
   );
 };
 

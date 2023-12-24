@@ -12,12 +12,12 @@ import {setUserData} from '../actions/user';
 const HomeScreen = ({navigation}: any): React.JSX.Element => {
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
-  const {user, calendar} = useSelector(state => state);
+  const {user, calendar, intakes} = useSelector(state => state);
 
   useEffect(() => {
     setUsername(user?.username);
-    const onSuccess = (intakes: any[]) => {
-      dispatch(setIntakesForToday(intakes));
+    const onSuccess = (intake: any[]) => {
+      dispatch(setIntakesForToday(intake));
     };
     const onError = () => {
       Alert.alert(
@@ -42,7 +42,13 @@ const HomeScreen = ({navigation}: any): React.JSX.Element => {
       onSuccess,
       onError,
     );
-  }, [calendar?.selectedDay?.formatted, dispatch, navigation, user]);
+  }, [
+    calendar?.selectedDay?.formatted,
+    dispatch,
+    navigation,
+    user,
+    intakes?.editedIntake,
+  ]);
 
   useEffect(() => {
     // Always Clear pressedIntake State when focusing HomeScreen
@@ -50,7 +56,7 @@ const HomeScreen = ({navigation}: any): React.JSX.Element => {
       dispatch(pressOnIntake(''));
     });
     return unsubscribe;
-  });
+  }, []);
 
   const logout = () => {
     Alert.alert('', 'Are you sure you want to log out?', [

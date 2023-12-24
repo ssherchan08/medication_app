@@ -26,14 +26,12 @@ export const deleteMedicine = async (
 ) => {
   try {
     const response = await DELETE('meds/delete', medId);
-    console.log(response.status);
     if (response.status === 204) {
       onSuccessHandler();
     } else {
       onErrorHandler();
     }
   } catch (error) {
-    console.log(error);
     onErrorHandler();
   }
 };
@@ -64,7 +62,6 @@ export const getMedicinesDetails = async (
 ) => {
   try {
     const response = await GET(`meds/get-edit/${medId}`);
-    // console.log(response.data);
     if (response.data) {
       const data = convertKeys(response.data, CaseType.camel.toString());
       onSuccess(data);
@@ -85,7 +82,7 @@ export const editMedicine = async (
 ) => {
   try {
     const response = await PUT(
-      `meds/get-edit/${medId}`,
+      `meds/get-edit/${medId}/`,
       convertKeys(editedMedicine),
     );
     if (response.data) {
@@ -109,7 +106,6 @@ export const getUserMedsPerDay = async (
     const response = await GET(
       `meds/filter-user-medicine/?user=${uId}&reminder_days__contains=${day}`,
     );
-    console.log(response.data);
     if (response.data) {
       const data = convertKeys(response.data, CaseType.camel.toString());
       onSuccessHandler(data);
@@ -121,4 +117,3 @@ export const getUserMedsPerDay = async (
     onErrorHandler();
   }
 };
-// /meds/filter-user-medicine/?user=2&reminder_days__contains=Friday

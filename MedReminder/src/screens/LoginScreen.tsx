@@ -7,6 +7,7 @@ import {logIn} from '../api/auth';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useDispatch} from 'react-redux';
 import {setUserData} from '../actions/user';
+import {saveToAsyncStorage} from '../asyncStorage';
 
 const initialState = {
   username: '',
@@ -28,18 +29,17 @@ const LoginScreen = ({navigation}: any): React.JSX.Element => {
         Alert.alert('Your Password is required');
         setIsLoading(false);
       } else {
-        console.log(formState);
         logIn(formState.username, formState.password)
           .then(async res => {
             if (res.data) {
-              dispatch(
-                setUserData({
-                  username: res?.data?.username,
-                  password: formState.password,
-                  userId: res?.data?.id,
-                  token: res?.data?.token,
-                }),
-              );
+              const uData = {
+                username: res?.data?.username,
+                password: formState.password,
+                userId: res?.data?.id,
+                token: res?.data?.token,
+              };
+              // await saveToAsyncStorage('user', uData);
+              dispatch(setUserData(uData));
               navigation.navigate('Home');
             } else {
               Alert.alert('Email or Password is wrong');
