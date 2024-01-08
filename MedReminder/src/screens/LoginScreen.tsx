@@ -31,6 +31,7 @@ const LoginScreen = ({navigation}: any): React.JSX.Element => {
       } else {
         logIn(formState.username, formState.password)
           .then(async res => {
+            console.log(res);
             if (res.data) {
               const uData = {
                 username: res?.data?.username,

@@ -70,7 +70,7 @@ function CustomInput(
           style && style,
           require ? {borderWidth: 1, borderColor: 'red'} : {borderWidth: 0},
         ]}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems:'center'}}>
           {leftIcon && (
             <Icon name={leftIcon} size={25} color={colors.text.light} />
           )}
