@@ -11,8 +11,8 @@ import {Screen, CustomInput, CustomButton} from '../components';
 import colors from '../utils/colors';
 import {logIn, signUp} from '../api/auth';
 import {useDispatch} from 'react-redux';
-import {setUserData} from '../actions/user';
 import {saveToAsyncStorage} from '../asyncStorage';
+import { setUserData } from '../redux/reducers/userSlice';
 
 const initialState = {
   username: '',

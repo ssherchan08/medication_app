@@ -14,7 +14,6 @@ import {format} from 'date-fns';
 import {enUS} from 'date-fns/locale';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {editIntake} from '../actions/intakes';
 import {MEDICINE_TYPES, MEDICINE_DAYS} from '../constants';
 import colors from '../utils/colors';
 import {Text} from 'react-native';
@@ -22,6 +21,7 @@ import CustomButton from './CustomButton';
 import CheckBox from '@react-native-community/checkbox';
 import {CustomInput} from '.';
 import {addMedicine, deleteMedicine, editMedicine} from '../api/meds';
+import {editIntake} from '../redux/reducers/intakesSlice';
 
 const Form = ({type = 'Add'}) => {
   const initialAddState = {
@@ -46,11 +46,11 @@ const Form = ({type = 'Add'}) => {
   const [dropDownPickerVisible, setDropDownPickerVisible] = useState(false);
   const [dropDownPickerItems, setDropDownPickerItems] =
     useState(MEDICINE_TYPES);
-  const {user} = useSelector(state => state);
+  const {userData} = useSelector(state => state.user);
 
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    formState.user = JSON.parse(user.userId);
+    formState.user = JSON.parse(userData.userId);
     // Compare the current values with the initialState and check for empty values
     // If there have been NO updates made or there is at least one empty value, disable the button
     // When there is at least one update and NO empty value, enable the button for the user to submit the changes
@@ -61,8 +61,7 @@ const Form = ({type = 'Add'}) => {
       if (Array.isArray(formState[key]) && key !== 'takenOn') {
         emptyValues.push(formState[key].length === 0);
         comparedValues.push(
-          formState[key].sort().toString() ===
-            initialState[key].sort().toString(),
+          formState[key].toString() === initialState[key].toString(),
         );
         // Check for empty and not updated strings in the formstate
       } else if (typeof formState[key] === 'string') {
@@ -73,7 +72,7 @@ const Form = ({type = 'Add'}) => {
     const hasUpdatedValues = comparedValues.some(value => value === false);
     const hasEmptyValues = emptyValues.some(value => value === true);
     setButtonDisabled(!hasUpdatedValues || hasEmptyValues);
-  }, [formState, initialState, user.userId]);
+  }, [formState, initialState, userData.userId]);
 
   const submitForm = async () => {
     if (type === 'Add') {
@@ -147,7 +146,7 @@ const Form = ({type = 'Add'}) => {
             minute: '2-digit',
             formatMatcher: 'basic',
           })
-        : format(date, 'hh:mm', {locale: enUS}).toUpperCase();
+        : format(date, 'hh:mm a', {locale: enUS}).toUpperCase();
     setFormState({...formState, reminder: formattedTimeString});
     hideDatePicker();
   };
@@ -237,7 +236,7 @@ const Form = ({type = 'Add'}) => {
         )}
         <DateTimePickerModal
           textColor="black"
-          // display="spinner"
+          display="spinner"
           isVisible={datePickerVisible}
           locale="en_US"
           mode="time"
@@ -257,9 +256,13 @@ const Form = ({type = 'Add'}) => {
               <View style={styles(isChecked).checkBoxStyle}>
                 <CheckBox
                   boxType="square"
-                  animationDuration={0.2}
+                  animationDuration={0.1}
                   value={isChecked}
                   tintColor={colors.inputField.default}
+                  tintColors={{
+                    true: colors.text.light,
+                    false: colors.inputField.default,
+                  }}
                   onCheckColor={colors.text.light}
                   onFillColor={colors.inputField.default}
                   onTintColor={colors.inputField.default}

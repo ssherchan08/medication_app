@@ -49,8 +49,8 @@ const IntakesProgress = () => {
 const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: colors.greys.light,
-    width: 180,
-    height: 180,
+    width: '50%',
+    height: '23%',
     borderRadius: 180,
     alignItems: 'center',
     justifyContent: 'center',

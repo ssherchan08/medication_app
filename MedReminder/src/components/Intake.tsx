@@ -1,19 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import {
-  View,
-  TouchableWithoutFeedback,
-  Alert,
-  TouchableOpacity,
-  StyleSheet,
-  Text,
-} from 'react-native';
+import React from 'react';
+import {useDispatch} from 'react-redux';
+import {View, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {takeNewMedicine} from '../actions/user';
-import {pressOnIntake, pressOnIntakeId} from '../actions/intakes';
-import {CheckmarkIcon, ClockIcon, InfoIcon} from '../icons';
 import {renderMedicineIcon} from '../utils/renderMedicineIcon';
 import colors from '../utils/colors';
+import {pressOnIntake} from '../redux/reducers/intakesSlice';
 
 const DefaultIntake = ({name, amount, medType, dose, reminder}) => {
   return (
@@ -68,11 +59,6 @@ const Intake = ({id, name, amount, medType, dose, reminder, reminderDays}) => {
         <DefaultIntake {...subComponentProps} />
       </View>
     </TouchableOpacity>
-    // <TouchableWithoutFeedback onLongPress={handleOnPress}>
-    //   <View style={styles.intakeContainer}>
-    //     <DefaultIntake {...subComponentProps} />
-    //   </View>
-    // </TouchableWithoutFeedback>
   );
 };
 

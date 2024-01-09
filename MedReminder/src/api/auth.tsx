@@ -9,7 +9,6 @@ export const logIn = async (name = '', pwd = '') => {
     };
     return await POST('api/login/', body);
   } catch (err) {
-    console.log(err);
     Alert.alert('Email or Password is wrong');
   }
 };
@@ -24,7 +23,6 @@ export const signUp = async (name = '', pwd = '', email = '') => {
     return await POST('api/register/', body);
   } catch (err) {
     Alert.alert('An error occured or the Email is already registered');
-    console.log(err);
   }
 };
 
@@ -37,7 +35,6 @@ export const signOut = async (name = '', pwd = '', token = '') => {
     return await POSTWITHTOKEN('api/logout/', body, token);
   } catch (err) {
     Alert.alert('An error occured or the Email is already registered');
-    console.log(err);
   }
 };
 

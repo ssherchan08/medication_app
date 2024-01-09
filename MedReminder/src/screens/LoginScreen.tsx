@@ -6,8 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {logIn} from '../api/auth';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useDispatch} from 'react-redux';
-import {setUserData} from '../actions/user';
-import {saveToAsyncStorage} from '../asyncStorage';
+import {setUserData} from '../redux/reducers/userSlice';
 
 const initialState = {
   username: '',
@@ -31,7 +30,6 @@ const LoginScreen = ({navigation}: any): React.JSX.Element => {
       } else {
         logIn(formState.username, formState.password)
           .then(async res => {
-            console.log(res);
             if (res.data) {
               const uData = {
                 username: res?.data?.username,

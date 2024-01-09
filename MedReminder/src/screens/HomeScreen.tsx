@@ -2,52 +2,57 @@ import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {View, TouchableOpacity, StyleSheet, Text, Alert} from 'react-native';
 import {Screen, IntakesProgress, Calendar, IntakesList} from '../components';
-import {pressOnIntake, setIntakesForToday} from '../actions/intakes';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../utils/colors';
 import {signOut} from '../api/auth';
 import {getUserMedsPerDay} from '../api/meds';
-import {setUserData} from '../actions/user';
+import {
+  pressOnIntake,
+  setIntakesForToday,
+} from '../redux/reducers/intakesSlice';
+import {clearUserData} from '../redux/reducers/userSlice';
 
 const HomeScreen = ({navigation}: any): React.JSX.Element => {
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
-  const {user, calendar, intakes} = useSelector(state => state);
+  const {selectedDay} = useSelector(state => state.calendar);
+  const {editedIntake} = useSelector(state => state.intakes);
+  const {userData} = useSelector(state => state.user);
 
   useEffect(() => {
-    setUsername(user?.username);
-    const onSuccess = (intake: any[]) => {
+    setUsername(userData?.username);
+    const onSuccessHandler = (intake: any[]) => {
       dispatch(setIntakesForToday(intake));
     };
-    const onError = () => {
-      Alert.alert(
-        '',
-        'Something wrent wrong getting your data. You will be logged out safely',
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              signOut(user.username, user.password, user.token);
-              dispatch(setUserData(''));
-              navigation.navigate('Login');
-            },
-            style: 'cancel',
-          },
-        ],
-      );
+    const onErrorHandler = () => {
+      // Alert.alert(
+      //   '',
+      //   'Something wrent wrong getting your data. You will be logged out safely',
+      //   [
+      //     {
+      //       text: 'OK',
+      //       onPress: () => {
+      //         signOut(userData.username, userData.password, userData.token);
+      //         dispatch(clearUserData({}));
+      //         navigation.navigate('Login');
+      //       },
+      //       style: 'cancel',
+      //     },
+      //   ],
+      // );
     };
     getUserMedsPerDay(
-      user.userId,
-      calendar?.selectedDay?.formatted,
-      onSuccess,
-      onError,
+      userData.userId,
+      selectedDay?.formatted,
+      onSuccessHandler,
+      onErrorHandler,
     );
   }, [
-    calendar?.selectedDay?.formatted,
+    selectedDay,
     dispatch,
-    navigation,
-    user,
-    intakes?.editedIntake,
+    userData.userId,
+    editedIntake,
+    userData?.username,
   ]);
 
   useEffect(() => {
@@ -63,8 +68,8 @@ const HomeScreen = ({navigation}: any): React.JSX.Element => {
       {
         text: 'OK',
         onPress: () => {
-          signOut(user.username, user.password, user.token);
-          dispatch(setUserData(''));
+          signOut(userData.username, userData.password, userData.token);
+          dispatch(clearUserData({}));
           navigation.navigate('Login');
         },
       },
@@ -106,7 +111,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 10,
   },
   userAvatar: {
     marginRight: 'auto',

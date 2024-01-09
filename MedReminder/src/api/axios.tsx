@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const baseUrl = 'http://127.0.0.1:8000';
+// const baseUrl = 'http://127.0.0.1:8000';
 // const baseUrl = 'http://192.168.1.67:8000';
-// const baseUrl = 'http://10.0.2.2:8000';
+const baseUrl = 'http://10.0.2.2:8000';
 
 export const GET = async (url: string) => {
   try {
@@ -55,7 +55,7 @@ export const DELETE = async (url: string, id: number) => {
   try {
     return await axios({
       method: 'delete',
-      url: `${baseUrl}/${url}/${id}`,
+      url: `${baseUrl}/${url}/${id}/`,
       // responseType: 'json',
       headers: {
         'Content-Type': 'application/json',

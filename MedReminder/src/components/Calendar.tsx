@@ -4,8 +4,8 @@ import {isToday, format} from 'date-fns';
 import {enUS} from 'date-fns/locale';
 import {View, TouchableOpacity, StyleSheet, Platform, Text} from 'react-native';
 import {getWeekDays} from '../utils/getWeekDays';
-import {setSelectedDay} from '../actions/calendar';
 import colors from '../utils/colors';
+import {setSelectedDay} from '../redux/reducers/calendarSlice';
 
 const Calendar = () => {
   const dispatch = useDispatch();

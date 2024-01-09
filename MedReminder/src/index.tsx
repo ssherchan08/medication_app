@@ -9,25 +9,11 @@ import {
   MedicineDetailsScreen,
   AddMedicineScreen,
 } from './screens';
-// import {useDispatch} from 'react-redux';
-// import {setUserData} from './actions/user';
-// import {loadFromAsyncStorage} from './asyncStorage';
+import {useSelector} from 'react-redux';
 
 export default function Main() {
   const AppStack = createStackNavigator();
-//   const dispatch = useDispatch();
-//   const [containsUser, setContainsUser] = useState(false);
-//   const userExists = async () => {
-//     const userData = await loadFromAsyncStorage('user');
-//     const uExists = userData ? true : false;
-//     dispatch(setUserData(userData ? userData : ''));
-//     setContainsUser(uExists);
-//     console.log(containsUser);
-//   };
-
-//   useEffect(() => {
-//     userExists();
-//   }, []);
+  const {userData} = useSelector(state => state.user);
 
   return (
     <NavigationContainer>
@@ -37,7 +23,8 @@ export default function Main() {
         backgroundColor={'transparent'}
       />
       <View style={{flex: 1}}>
-        <AppStack.Navigator initialRouteName={'Login'}>
+        <AppStack.Navigator
+          initialRouteName={userData?.token ? 'Home' : 'Login'}>
           <AppStack.Screen
             name="Login"
             options={() => ({

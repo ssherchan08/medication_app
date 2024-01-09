@@ -11,7 +11,7 @@ const IntakesList = () => {
     <View style={styles.container}>
       <ScrollView
         bounces={false}
-        style={{width: '100%', height:'35%'}}
+        style={{width: '100%', height:'34%'}}
         showsVerticalScrollIndicator={false}>
         {intakesForToday?.length ? (
           intakesForToday?.map((intake: any, index: number) => {
@@ -29,7 +29,7 @@ const IntakesList = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 30,
+    marginVertical: 20,
     width: '100%',
   },
   noDataContainer: {
