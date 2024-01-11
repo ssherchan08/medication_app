@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import colors from '../utils/colors';
+import Loader from '../utils/loader';
 
 export interface Props extends TouchableOpacityProps {
   title: string;
@@ -50,18 +51,22 @@ function CustomButton({
       activeOpacity={0.5}
       disabled={disabled}>
       <View style={styles.row}>
-        <RNText
-          textBreakStrategy="simple"
-          allowFontScaling={false}
-          style={[
-            buttonStyle ? buttonStyle : styles.text,
-            {
-              color: textColors ? textColors : colors.whites.default,
-              fontSize: fontSize,
-            },
-          ]}>
-          {title}
-        </RNText>
+        {loading ? (
+          <Loader />
+        ) : (
+          <RNText
+            textBreakStrategy="simple"
+            allowFontScaling={false}
+            style={[
+              buttonStyle ? buttonStyle : styles.text,
+              {
+                color: textColors ? textColors : colors.whites.default,
+                fontSize: fontSize,
+              },
+            ]}>
+            {title}
+          </RNText>
+        )}
       </View>
     </TouchableOpacity>
   );

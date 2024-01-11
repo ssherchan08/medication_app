@@ -47,6 +47,7 @@ const Form = ({type = 'Add'}) => {
   const [dropDownPickerItems, setDropDownPickerItems] =
     useState(MEDICINE_TYPES);
   const {userData} = useSelector(state => state.user);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -75,8 +76,10 @@ const Form = ({type = 'Add'}) => {
   }, [formState, initialState, userData.userId]);
 
   const submitForm = async () => {
+    setIsLoading(true);
     if (type === 'Add') {
       const onAddSuccess = () => {
+        setIsLoading(false);
         dispatch(editIntake(formState));
         Alert.alert(
           'Medicine added!',
@@ -92,11 +95,14 @@ const Form = ({type = 'Add'}) => {
           ],
         );
       };
-      const onAddFailure = () =>
+      const onAddFailure = () => {
+        setIsLoading(false);
         Alert.alert('Something went wrong. Please try again');
+      };
       addMedicine(formState, onAddSuccess, onAddFailure);
     } else if (type === 'Edit') {
       const onEditSuccess = () => {
+        setIsLoading(false);
         dispatch(editIntake(formState));
         Alert.alert(
           'Medicine updated!',
@@ -110,14 +116,19 @@ const Form = ({type = 'Add'}) => {
           ],
         );
       };
-      const onEditFailure = () =>
+      const onEditFailure = () => {
+        setIsLoading(false);
         Alert.alert('Something went wrong. Please try again');
+      };
+
       editMedicine(pressedIntake.id, formState, onEditSuccess, onEditFailure);
     }
   };
 
   const onDeleteMedicine = () => {
+    setIsLoading(true);
     const onDeleteSuccess = () => {
+      setIsLoading(false);
       dispatch(editIntake(formState));
       Alert.alert(
         'Medicine deleted!',
@@ -133,8 +144,11 @@ const Form = ({type = 'Add'}) => {
         ],
       );
     };
-    const onDeleteFailure = () =>
+    const onDeleteFailure = () => {
+      setIsLoading(false);
       Alert.alert('Something went wrong. Please try again');
+    };
+
     deleteMedicine(formState.id, onDeleteSuccess, onDeleteFailure);
   };
 
@@ -282,6 +296,7 @@ const Form = ({type = 'Add'}) => {
         disabled={buttonDisabled}
         title="Save Medicine"
         onPress={submitForm}
+        loading={isLoading}
         style={{marginBottom: 25}}
       />
       {/* *** DELETE AREA *** */}
@@ -295,6 +310,7 @@ const Form = ({type = 'Add'}) => {
             onPress={onDeleteMedicine}
             title="Delete Medicine"
             style={styles(false).deleteBtn}
+            loading={isLoading}
           />
         </View>
       )}
