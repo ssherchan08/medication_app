@@ -12,7 +12,8 @@ import colors from '../utils/colors';
 import {logIn, signUp} from '../api/auth';
 import {useDispatch} from 'react-redux';
 import {saveToAsyncStorage} from '../asyncStorage';
-import { setUserData } from '../redux/reducers/userSlice';
+import {setUserData} from '../redux/reducers/userSlice';
+import {useNavigation} from '@react-navigation/native';
 
 const initialState = {
   username: '',
@@ -21,10 +22,11 @@ const initialState = {
   confirmedPassword: '',
 };
 
-const SignupScreen = ({navigation}: any): React.JSX.Element => {
+const SignupScreen = () => {
   const [formState, setFormState] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const handleSignUp = () => {
     setIsLoading(true);

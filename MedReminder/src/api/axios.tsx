@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const baseUrl = 'http://192.168.1.67:8000'; //Home IP
+// const baseUrl = 'http://192.168.1.67:8000'; //Home IP
+const baseUrl = 'http://172.17.17.28:8000'; //Office IP
 
 export const GET = async (url: string) => {
   try {

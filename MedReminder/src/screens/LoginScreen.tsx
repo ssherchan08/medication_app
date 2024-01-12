@@ -7,13 +7,15 @@ import {logIn} from '../api/auth';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useDispatch} from 'react-redux';
 import {setUserData} from '../redux/reducers/userSlice';
+import {useNavigation} from '@react-navigation/native';
 
 const initialState = {
   username: '',
   password: '',
 };
 
-const LoginScreen = ({navigation}: any): React.JSX.Element => {
+const LoginScreen = () => {
+  const navigation = useNavigation();
   const [formState, setFormState] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
